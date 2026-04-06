@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraceMe — Your Digital Identity Exposed</title>
+    <meta name="description" content="Discover your invisible digital fingerprint. TraceMe reveals everything your browser leaks — in real time. No server. No tracking. Pure transparency.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body class="booting">
+
+    <!-- ══ SCROLL PROGRESS BAR ══════════════════════════════ -->
+    <div id="scroll-progress"></div>
+
+    <!-- ══ SECTION NAV DOTS ══════════════════════════════════ -->
+    <nav id="section-nav" aria-label="Section navigation">
+        <div class="nav-dot active" data-target="hero"    data-label="HERO"></div>
+        <div class="nav-dot"        data-target="dashboard" data-label="FINGERPRINT"></div>
+        <div class="nav-dot"        data-target="education" data-label="INSIGHTS"></div>
+    </nav>
+
+    <!-- ══ BOOT SEQUENCE OVERLAY ══════════════════════════════ -->
+    <div id="boot-screen">
+        <canvas id="boot-canvas"></canvas>
+        <div class="boot-content">
+            <div class="boot-logo">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="13" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/>
+                    <circle cx="20" cy="20" r="8"  stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="3"  fill="currentColor"/>
+                </svg>
+                <span>TraceMe</span>
+            </div>
+            <div class="boot-terminal" id="boot-terminal"></div>
+            <div class="boot-bar-wrap">
+                <div class="boot-bar" id="boot-bar"></div>
+            </div>
+            <p class="boot-sub" id="boot-sub">INITIALIZING IDENTITY ENGINE v3.0</p>
+        </div>
+    </div>
+
+    <!-- ══ MATRIX CANVAS (background) ════════════════════════ -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- ══ HEADER ══════════════════════════════════════════════ -->
+    <header class="header" id="main-header">
+        <div class="header-inner">
+            <a class="logo" href="#">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="13" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/>
+                    <circle cx="20" cy="20" r="8"  stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="3"  fill="currentColor"/>
+                    <line x1="2"  y1="20" x2="38" y2="20" stroke="currentColor" stroke-width="0.5" opacity="0.4"/>
+                    <line x1="20" y1="2"  x2="20" y2="38" stroke="currentColor" stroke-width="0.5" opacity="0.4"/>
+                </svg>
+                <span class="logo-text" data-glitch="TraceMe">TraceMe</span>
+            </a>
+            <div class="header-center">
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span class="live-label">SCANNING ACTIVE</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-stats">
+                    <div class="hstat">
+                        <span class="hstat-label">SESSION</span>
+                        <span class="hstat-val" id="session-timer">00:00</span>
+                    </div>
+                    <div class="hstat">
+                        <span class="hstat-label">VECTORS</span>
+                        <span class="hstat-val" id="vectors-count">0</span>
+                    </div>
+                </div>
+                <div class="header-clock" id="header-clock"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ══ HERO SECTION ════════════════════════════════════════ -->
+    <section class="hero" id="hero">
+        <div class="hero-bg-radar">
+            <canvas id="radar-canvas"></canvas>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-eyebrow reveal-up" data-delay="0">
+                <span class="eyebrow-dot"></span>
+                Identity Exposure Report
+                <span class="eyebrow-sep">◆</span>
+                Real-time Analysis
+            </div>
+
+            <h1 class="hero-headline reveal-up" data-delay="100">
+                <span class="headline-line glitch-text" data-text="YOUR IDENTITY">YOUR IDENTITY</span>
+                <span class="headline-line hero-accent">IS EXPOSED.</span>
+            </h1>
+
+            <p class="hero-sub reveal-up" data-delay="200">
+                Without cookies. Without login.<br>
+                Every website you visit collects <strong>all of this</strong>.
+            </p>
+
+            <div class="hero-cta-row reveal-up" data-delay="300">
+                <a href="#dashboard" class="btn-hero-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    Scan My Identity
+                </a>
+                <a href="#education" class="btn-hero-ghost">
+                    What Is This? →
+                </a>
+            </div>
+
+            <!-- LIVE FINGERPRINT PREVIEW CHIPS -->
+            <div class="hero-data-chips reveal-up" data-delay="400">
+                <div class="chip-live">
+                    <span class="chip-icon">🌐</span>
+                    <div><span class="chip-lbl">IP ADDRESS</span><span class="chip-val" id="hero-ip">Detecting…</span></div>
+                </div>
+                <div class="chip-live">
+                    <span class="chip-icon">💻</span>
+                    <div><span class="chip-lbl">PLATFORM</span><span class="chip-val" id="hero-platform">Scanning…</span></div>
+                </div>
+                <div class="chip-live">
+                    <span class="chip-icon">🕐</span>
+                    <div><span class="chip-lbl">TIMEZONE</span><span class="chip-val" id="hero-timezone">Scanning…</span></div>
+                </div>
+                <div class="chip-live">
+                    <span class="chip-icon">🖥️</span>
+                    <div><span class="chip-lbl">RESOLUTION</span><span class="chip-val" id="hero-resolution">Scanning…</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLOATING TERMINAL WIDGET -->
+        <div class="terminal-widget" id="terminal-widget">
+            <div class="tw-titlebar">
+                <div class="tw-dots">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <span class="tw-title">traceme — scan_engine@v3</span>
+                <button class="tw-minimize" onclick="toggleTerminal()" title="Minimize">—</button>
+            </div>
+            <div class="tw-body" id="terminal-output"></div>
+            <div class="tw-input-row">
+                <span class="tw-prompt">▶</span>
+                <span class="tw-cursor-line" id="tw-typing"></span>
+                <span class="tw-blink">█</span>
+            </div>
+        </div>
+
+        <div class="hero-scroll-hint">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12l7 7 7-7"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ MARQUEE TICKER ══════════════════════════════════════ -->
+    <div class="scroll-marquee-wrap" aria-hidden="true">
+        <div class="scroll-marquee" id="marquee-track">
+            <span class="marquee-item"><strong>FINGERPRINT</strong> <span class="marquee-sep">◆</span> collected in real-time</span>
+            <span class="marquee-item"><strong>CANVAS HASH</strong> <span class="marquee-sep">◆</span> unique per device</span>
+            <span class="marquee-item"><strong>TYPING RHYTHM</strong> <span class="marquee-sep">◆</span> behavioral biometrics</span>
+            <span class="marquee-item"><strong>IP ADDRESS</strong> <span class="marquee-sep">◆</span> geographic exposure</span>
+            <span class="marquee-item"><strong>WEBGL PROBE</strong> <span class="marquee-sep">◆</span> GPU fingerprinting</span>
+            <span class="marquee-item"><strong>TIMEZONE</strong> <span class="marquee-sep">◆</span> location inference</span>
+            <span class="marquee-item"><strong>AUDIO CTX</strong> <span class="marquee-sep">◆</span> audio fingerprint</span>
+            <!-- duplicate for seamless loop -->
+            <span class="marquee-item"><strong>FINGERPRINT</strong> <span class="marquee-sep">◆</span> collected in real-time</span>
+            <span class="marquee-item"><strong>CANVAS HASH</strong> <span class="marquee-sep">◆</span> unique per device</span>
+            <span class="marquee-item"><strong>TYPING RHYTHM</strong> <span class="marquee-sep">◆</span> behavioral biometrics</span>
+            <span class="marquee-item"><strong>IP ADDRESS</strong> <span class="marquee-sep">◆</span> geographic exposure</span>
+            <span class="marquee-item"><strong>WEBGL PROBE</strong> <span class="marquee-sep">◆</span> GPU fingerprinting</span>
+            <span class="marquee-item"><strong>TIMEZONE</strong> <span class="marquee-sep">◆</span> location inference</span>
+            <span class="marquee-item"><strong>AUDIO CTX</strong> <span class="marquee-sep">◆</span> audio fingerprint</span>
+        </div>
+    </div>
+
+    <!-- ══ DASHBOARD ════════════════════════════════════════════ -->
+    <main id="dashboard">
+
+        <!-- Bento Grid: Cards -->
+        <section class="bento-section">
+            <div class="section-header reveal-up">
+                <div class="section-eyebrow">Live Data Feed</div>
+                <h2 class="section-title">Your Digital Fingerprint</h2>
+                <p class="section-sub">Every row below is a data point websites collect about you silently.</p>
+            </div>
+
+            <div class="bento-grid">
+
+                <!-- BENTO: Browser Fingerprint (tall/wide) -->
+                <div class="bento-card bento-browser reveal-scale" data-delay="0" id="card-browser">
+                    <div class="bento-card-glow glow-cyan"></div>
+                    <div class="scan-line" id="scan-browser"></div>
+                    <div class="bento-header">
+                        <div class="bento-icon-wrap cyan">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2.5"/>
+                                <path d="M3 9h18"/>
+                                <circle cx="7.5" cy="6" r="1" fill="currentColor"/>
+                                <circle cx="11"  cy="6" r="1" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="bento-title">Browser Fingerprint</h3>
+                            <p class="bento-sub">Device signature collected</p>
+                        </div>
+                        <span class="status-badge cyan">COLLECTED</span>
+                    </div>
+                    <div class="data-table" id="browserDataGrid">
+                        <div class="data-row clickable" onclick="openDetail('Browser User-Agent','userAgent')">
+                            <span class="dk">Browser</span><span class="dv" id="browser">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Platform','platform')">
+                            <span class="dk">Platform</span><span class="dv" id="platform">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Language','language')">
+                            <span class="dk">Language</span><span class="dv" id="language">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Resolution','resolution')">
+                            <span class="dk">Resolution</span><span class="dv" id="resolution">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Timezone','timezone')">
+                            <span class="dk">Timezone</span><span class="dv" id="timezone">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Color Depth','colorDepth')">
+                            <span class="dk">Color Depth</span><span class="dv" id="colorDepth">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('IPv4 Address','ipv4')">
+                            <span class="dk">IPv4</span><span class="dv" id="ipv4">Detecting…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('IPv6 Address','ipv6')">
+                            <span class="dk">IPv6</span><span class="dv" id="ipv6">Detecting…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('CPU Cores','cpu')">
+                            <span class="dk">CPU Cores</span><span class="dv" id="cpu">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Device Memory','memory')">
+                            <span class="dk">Memory</span><span class="dv" id="memory">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Connection','connection')">
+                            <span class="dk">Connection</span><span class="dv" id="connection">Scanning…</span>
+                        </div>
+                        <div class="data-row clickable" onclick="openDetail('Do Not Track','doNotTrack')">
+                            <span class="dk">Do Not Track</span><span class="dv" id="doNotTrack">Scanning…</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="dk">Battery</span><span class="dv" id="battery">Checking…</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="dk">Plugins</span><span class="dv" id="plugins">Scanning…</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="dk">Dark Mode</span><span class="dv" id="darkMode">Scanning…</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="dk">Touch Points</span><span class="dv" id="touchPoints">Scanning…</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BENTO: Unique Identity (tall) -->
+                <div class="bento-card bento-identity reveal-scale" data-delay="100" id="card-identity">
+                    <div class="bento-card-glow glow-purple"></div>
+                    <div class="scan-line" id="scan-identity"></div>
+                    <div class="bento-header">
+                        <div class="bento-icon-wrap purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 11c0 3.517-1.009 6.8-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="bento-title">Unique Identity</h3>
+                            <p class="bento-sub">Your fingerprint hash</p>
+                        </div>
+                        <span class="status-badge purple" id="statusBadge">WAITING</span>
+                    </div>
+
+                    <div class="fp-radar-wrap">
+                        <div class="fp-scanner-ring">
+                            <svg class="fp-rings-svg" viewBox="0 0 200 200">
+                                <defs>
+                                    <radialGradient id="ringGrad">
+                                        <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
+                                    </radialGradient>
+                                </defs>
+                                <circle cx="100" cy="100" r="90" class="ring r1"/>
+                                <circle cx="100" cy="100" r="72" class="ring r2"/>
+                                <circle cx="100" cy="100" r="54" class="ring r3"/>
+                                <circle cx="100" cy="100" r="36" class="ring r4"/>
+                                <circle cx="100" cy="100" r="18" class="ring r5"/>
+                                <line x1="10" y1="100" x2="190" y2="100" class="scan-sweep" id="scanSweep"/>
+                            </svg>
+                            <div class="fp-center">
+                                <span class="fp-lbl">FINGERPRINT ID</span>
+                                <span class="fp-val" id="fingerprint">——————</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="copy-btn" id="copyBtn" onclick="copyFingerprint()" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2"/>
+                            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+                        </svg>
+                        Copy Fingerprint ID
+                    </button>
+
+                    <div class="risk-panel">
+                        <div class="risk-top-row">
+                            <span class="risk-title">Tracking Risk Level</span>
+                            <div class="risk-right">
+                                <span class="risk-label" id="risk">UNKNOWN</span>
+                                <button class="btn-icon-sm" onclick="toggleRiskBreakdown()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <line x1="12" y1="8" x2="12" y2="12"/>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="meter-track">
+                            <div class="meter-fill" id="meterFill"></div>
+                        </div>
+                        <div class="meter-scale"><span>LOW</span><span>MEDIUM</span><span>HIGH</span></div>
+                        <div class="risk-breakdown hidden" id="riskBreakdown">
+                            <div class="bd-row"><span>Fingerprint Uniqueness</span><span id="uniquenessScore">—</span></div>
+                            <div class="bd-row"><span>Typing Pattern</span><span id="typingScore">—</span></div>
+                            <div class="bd-row"><span>Accuracy Factor</span><span id="accuracyScore">—</span></div>
+                            <div class="bd-row bd-total"><span>Total Score</span><span id="totalScore">—</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BENTO: Typing Biometrics -->
+                <div class="bento-card bento-typing reveal-scale" data-delay="200">
+                    <div class="bento-card-glow glow-amber"></div>
+                    <div class="bento-header">
+                        <div class="bento-icon-wrap amber">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="6" width="20" height="13" rx="2"/>
+                                <path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M10 14h.01M14 14h.01M18 14h.01M8 17h8"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="bento-title">Typing Biometrics</h3>
+                            <p class="bento-sub">Behavioral pattern analysis</p>
+                        </div>
+                        <span class="status-badge amber">ANALYZING</span>
+                    </div>
+                    <div class="typing-section">
+                        <div class="typing-prompt-row">
+                            <p class="type-instruction">Type this sentence exactly:</p>
+                            <button class="btn-icon" onclick="loadNewSentence()" id="refresh-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 12a9 9 0 019-9 9.75 9.75 0 016.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 01-9 9 9.75 9.75 0 01-6.74-2.74L3 16M3 21v-5h5"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="sentence-target" id="sentenceDisplay"></div>
+                        <div class="textarea-wrap">
+                            <textarea id="typingBox" placeholder="Start typing here…" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+                        </div>
+                        <div class="metrics-row">
+                            <div class="metric-pill">
+                                <span class="metric-icon-s">⚡</span>
+                                <div><span class="metric-lbl">Speed</span><span class="metric-val" id="speed">—</span></div>
+                            </div>
+                            <div class="metric-pill">
+                                <span class="metric-icon-s">🎯</span>
+                                <div><span class="metric-lbl">Accuracy</span><span class="metric-val" id="accuracy">—</span></div>
+                            </div>
+                            <div class="metric-pill">
+                                <span class="metric-icon-s">📝</span>
+                                <div><span class="metric-lbl">WPM</span><span class="metric-val" id="wpm">—</span></div>
+                            </div>
+                            <div class="metric-pill">
+                                <span class="metric-icon-s">⏱️</span>
+                                <div><span class="metric-lbl">Duration</span><span class="metric-val" id="duration">—</span></div>
+                            </div>
+                        </div>
+                        <div class="keystroke-viz" id="keystrokeViz">
+                            <p class="viz-placeholder">Keystroke timing will visualize as you type…</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BENTO: Privacy Score (wide) -->
+                <div class="bento-card bento-score reveal-scale" data-delay="50">
+                    <div class="bento-card-glow glow-purple"></div>
+                    <div class="bento-header">
+                        <div class="bento-icon-wrap purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="bento-title">Privacy Score</h3>
+                            <p class="bento-sub">Based on your current config</p>
+                        </div>
+                    </div>
+                    <div class="score-layout">
+                        <div class="score-donut-wrap">
+                            <svg class="score-donut" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="10"/>
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="url(#scoreGrad)" stroke-width="10"
+                                        stroke-dasharray="314" stroke-dashoffset="314"
+                                        stroke-linecap="round" transform="rotate(-90 60 60)"
+                                        id="scoreCircle"/>
+                                <defs>
+                                    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%"   stop-color="#ff6e84"/>
+                                        <stop offset="50%"  stop-color="#f8a010"/>
+                                        <stop offset="100%" stop-color="#8ce7ff"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="score-inner">
+                                <span class="score-num" id="privacyScore">--</span>
+                                <span class="score-denom">/100</span>
+                            </div>
+                        </div>
+                        <div class="score-factors">
+                            <div class="factor-row">
+                                <div class="factor-meta">
+                                    <span class="factor-name">HTTPS Enabled</span>
+                                    <span class="factor-status" id="factorHTTPS">—</span>
+                                </div>
+                                <div class="factor-track"><div class="factor-fill" id="barHTTPS" style="width:0%"></div></div>
+                            </div>
+                            <div class="factor-row">
+                                <div class="factor-meta">
+                                    <span class="factor-name">Do Not Track</span>
+                                    <span class="factor-status" id="factorDNT">—</span>
+                                </div>
+                                <div class="factor-track"><div class="factor-fill" id="barDNT" style="width:0%"></div></div>
+                            </div>
+                            <div class="factor-row">
+                                <div class="factor-meta">
+                                    <span class="factor-name">Cookies Enabled</span>
+                                    <span class="factor-status" id="factorCookies">—</span>
+                                </div>
+                                <div class="factor-track"><div class="factor-fill" id="barCookies" style="width:0%"></div></div>
+                            </div>
+                            <div class="factor-row">
+                                <div class="factor-meta">
+                                    <span class="factor-name">Referrer Policy</span>
+                                    <span class="factor-status" id="factorReferrer">—</span>
+                                </div>
+                                <div class="factor-track"><div class="factor-fill" id="barReferrer" style="width:0%"></div></div>
+                            </div>
+                            <div class="factor-row">
+                                <div class="factor-meta">
+                                    <span class="factor-name">WebRTC Leak</span>
+                                    <span class="factor-status" id="factorWebRTC">—</span>
+                                </div>
+                                <div class="factor-track"><div class="factor-fill" id="barWebRTC" style="width:0%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BENTO: Visitor Stats (4 tiles) -->
+                <div class="bento-card bento-stats reveal-scale" data-delay="150">
+                    <div class="bento-card-glow glow-cyan"></div>
+                    <div class="bento-header">
+                        <div class="bento-icon-wrap cyan">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="bento-title">Visitor Analytics</h3>
+                            <p class="bento-sub">This device's history</p>
+                        </div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-icon">👥</span>
+                            <span class="stat-num count-up" id="totalVisitors" data-target="0">—</span>
+                            <span class="stat-lbl">Total Visits</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🔄</span>
+                            <span class="stat-num count-up" id="returningVisitors" data-target="0">—</span>
+                            <span class="stat-lbl">Returning</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🆕</span>
+                            <span class="stat-num count-up" id="newVisitors" data-target="0">—</span>
+                            <span class="stat-lbl">First-Time</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🌐</span>
+                            <span class="stat-num count-up" id="yourVisitNumber" data-target="0">—</span>
+                            <span class="stat-lbl">Your Visit #</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ══ PRIVACY EDUCATION ════════════════════════════════ -->
+        <section class="edu-section" id="education">
+            <div class="section-header reveal-up">
+                <div class="section-eyebrow">Privacy Education</div>
+                <h2 class="section-title">What Websites Know About You</h2>
+                <p class="section-sub">Even without cookies or login, here's what's collected silently</p>
+            </div>
+
+            <div class="edu-grid">
+
+                <div class="edu-card danger reveal-up" data-delay="0">
+                    <div class="edu-card-line danger"></div>
+                    <div class="ic-header">
+                        <span class="ic-icon">🌐</span>
+                        <div>
+                            <h3>Always Shared Automatically</h3>
+                            <span class="ic-badge danger">Cannot Be Hidden</span>
+                        </div>
+                    </div>
+                    <div class="ic-body">
+                        <div class="ic-item">
+                            <strong>Your IP Address</strong>
+                            <div class="ic-row"><span class="ic-k">IPv4:</span><span class="ic-v" id="displayIPv4">Detecting…</span></div>
+                            <div class="ic-row"><span class="ic-k">IPv6:</span><span class="ic-v" id="displayIPv6">Detecting…</span></div>
+                            <div class="ic-row" id="locationData" style="display:none"><span class="ic-k">Location:</span><span class="ic-v" id="displayLocation">Unknown</span></div>
+                            <div class="ic-row" id="ispData" style="display:none"><span class="ic-k">ISP:</span><span class="ic-v" id="displayISP">Unknown</span></div>
+                        </div>
+                        <div class="ic-item">
+                            <strong>User-Agent String</strong>
+                            <div class="ua-block" id="displayUserAgent">Loading…</div>
+                            <div class="ua-tags">
+                                <span class="ua-tag" id="browserTag">—</span>
+                                <span class="ua-tag" id="osTag">—</span>
+                                <span class="ua-tag" id="deviceTag">—</span>
+                            </div>
+                        </div>
+                        <div class="ic-item">
+                            <strong>Request Metadata</strong>
+                            <div class="ic-row"><span class="ic-k">Referrer:</span><span class="ic-v" id="displayReferrer">Checking…</span></div>
+                            <div class="ic-row"><span class="ic-k">Visit Time:</span><span class="ic-v" id="displayVisitTime">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">Page Load:</span><span class="ic-v" id="displayLoadTime">Calculating…</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card warning reveal-up" data-delay="100">
+                    <div class="edu-card-line warning"></div>
+                    <div class="ic-header">
+                        <span class="ic-icon">🧠</span>
+                        <div>
+                            <h3>Browser Fingerprinting</h3>
+                            <span class="ic-badge warning">Works Without Cookies</span>
+                        </div>
+                    </div>
+                    <div class="ic-body">
+                        <div class="ic-item">
+                            <strong>Screen &amp; Display</strong>
+                            <div class="ic-row"><span class="ic-k">Resolution:</span><span class="ic-v" id="displayResolution">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">Color Depth:</span><span class="ic-v" id="displayColorDepth">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">Available:</span><span class="ic-v" id="displayAvailResolution">Loading…</span></div>
+                        </div>
+                        <div class="ic-item">
+                            <strong>Timezone &amp; Language</strong>
+                            <div class="ic-row"><span class="ic-k">Timezone:</span><span class="ic-v" id="displayTimezone">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">Languages:</span><span class="ic-v" id="displayLanguages">Loading…</span></div>
+                        </div>
+                        <div class="ic-item">
+                            <strong>Canvas &amp; WebGL</strong>
+                            <div class="ic-row"><span class="ic-v mono-sm" id="displayCanvas">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">WebGL:</span><span class="ic-v" id="displayWebGL">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">Audio:</span><span class="ic-v" id="displayAudio">Loading…</span></div>
+                        </div>
+                        <div class="ic-item">
+                            <strong>Hardware</strong>
+                            <div class="ic-row"><span class="ic-k">CPU Cores:</span><span class="ic-v" id="displayCPU">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">Memory:</span><span class="ic-v" id="displayMemory">Loading…</span></div>
+                            <div class="ic-row"><span class="ic-k">Touch:</span><span class="ic-v" id="displayTouch">Loading…</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card info reveal-up" data-delay="200">
+                    <div class="edu-card-line info"></div>
+                    <div class="ic-header">
+                        <span class="ic-icon">👀</span>
+                        <div>
+                            <h3>What Website Owners See</h3>
+                            <span class="ic-badge info">Analytics &amp; Logs</span>
+                        </div>
+                    </div>
+                    <div class="ic-body">
+                        <div class="can-see-list">
+                            <div class="csi csi-yes">✓ Your IP address and location</div>
+                            <div class="csi csi-yes">✓ Device type and browser</div>
+                            <div class="csi csi-yes">✓ Pages visited and time spent</div>
+                            <div class="csi csi-yes">✓ Where you came from (referrer)</div>
+                            <div class="csi csi-yes">✓ Returning visitor (fingerprint)</div>
+                            <div class="csi csi-no">✗ Your name, email, or phone</div>
+                            <div class="csi csi-no">✗ Passwords or personal files</div>
+                            <div class="csi csi-no">✗ Contacts or messages</div>
+                        </div>
+                        <p class="ic-note-bold">👉 Unless you submit it via forms or login</p>
+                    </div>
+                </div>
+
+                <div class="edu-card warning reveal-up" data-delay="0">
+                    <div class="edu-card-line warning"></div>
+                    <div class="ic-header">
+                        <span class="ic-icon">🕵️</span>
+                        <div>
+                            <h3>Third-Party Trackers</h3>
+                            <span class="ic-badge warning">Multiple Companies</span>
+                        </div>
+                    </div>
+                    <div class="ic-body">
+                        <p class="ic-intro">When you visit a website, these may also track you:</p>
+                        <div class="tracker-chips">
+                            <span class="chip">📊 Google Analytics</span>
+                            <span class="chip">📱 Facebook Pixel</span>
+                            <span class="chip">🛡️ Cloudflare</span>
+                            <span class="chip">📢 Ad Networks</span>
+                            <span class="chip">🌐 CDN Providers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card info reveal-up" data-delay="100">
+                    <div class="edu-card-line info"></div>
+                    <div class="ic-header">
+                        <span class="ic-icon">🔐</span>
+                        <div>
+                            <h3>Connection Security</h3>
+                            <span class="ic-badge info">Your Status</span>
+                        </div>
+                    </div>
+                    <div class="ic-body">
+                        <div class="sec-list">
+                            <div class="sec-row"><span class="sec-k">Protocol</span><span class="sec-v" id="protocolStatus">Loading…</span></div>
+                            <div class="sec-row"><span class="sec-k">Cookies</span><span class="sec-v" id="cookiesStatus">Loading…</span></div>
+                            <div class="sec-row"><span class="sec-k">Do Not Track</span><span class="sec-v" id="dntStatus">Loading…</span></div>
+                            <div class="sec-row"><span class="sec-k">WebRTC Leak</span><span class="sec-v" id="webrtcStatus">Checking…</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-card success reveal-up" data-delay="200">
+                    <div class="edu-card-line success"></div>
+                    <div class="ic-header">
+                        <span class="ic-icon">🛡️</span>
+                        <div>
+                            <h3>How to Protect Yourself</h3>
+                            <span class="ic-badge success">Pro Tips</span>
+                        </div>
+                    </div>
+                    <div class="ic-body">
+                        <div class="tips-grid">
+                            <div class="tip-group">
+                                <h4>🌐 Browsers</h4>
+                                <ul>
+                                    <li>Use <strong>Brave</strong> or <strong>Firefox</strong></li>
+                                    <li>Enable Strict Tracking Protection</li>
+                                    <li>Try <strong>Tor Browser</strong></li>
+                                </ul>
+                            </div>
+                            <div class="tip-group">
+                                <h4>🔧 Extensions</h4>
+                                <ul>
+                                    <li><strong>uBlock Origin</strong></li>
+                                    <li><strong>Privacy Badger</strong></li>
+                                    <li><strong>HTTPS Everywhere</strong></li>
+                                </ul>
+                            </div>
+                            <div class="tip-group">
+                                <h4>🔒 Network</h4>
+                                <ul>
+                                    <li>Use a reputable <strong>VPN</strong></li>
+                                    <li>Disable WebRTC leaks</li>
+                                    <li>Avoid public Wi-Fi</li>
+                                </ul>
+                            </div>
+                            <div class="tip-group">
+                                <h4>⚙️ Settings</h4>
+                                <ul>
+                                    <li>Clear cookies regularly</li>
+                                    <li>Use incognito mode</li>
+                                    <li>Block 3rd-party cookies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- ══ FOOTER ════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-logo">
+                <svg class="footer-logo-icon" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="13" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/>
+                    <circle cx="20" cy="20" r="8"  stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="3"  fill="currentColor"/>
+                </svg>
+                <span>TraceMe</span>
+            </div>
+            <p>Educational tool for digital privacy awareness</p>
+            <div class="footer-secure-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                </svg>
+                No data sent to any server — everything runs locally
+            </div>
+        </div>
+    </footer>
+
+    <!-- ══ OVERLAYS ══════════════════════════════════════════════ -->
+    <!-- Risk Guide -->
+    <div class="overlay" id="riskGuide" style="display:none">
+        <div class="overlay-box">
+            <button class="overlay-x" onclick="closeRiskGuide()">✕</button>
+            <h2>🚨 High Tracking Risk Detected</h2>
+            <p>Your digital fingerprint is highly unique, making you easy to track across websites without cookies.</p>
+            <div id="riskFactorsContent"></div>
+            <div class="action-steps">
+                <h3>Reduce Your Risk:</h3>
+                <div class="step"><span class="step-n">1</span><div><h4>Use a Privacy Browser</h4><p>Switch to Brave, Firefox, or Tor Browser</p></div></div>
+                <div class="step"><span class="step-n">2</span><div><h4>Install Privacy Extensions</h4><p>uBlock Origin, Privacy Badger, HTTPS Everywhere</p></div></div>
+                <div class="step"><span class="step-n">3</span><div><h4>Use a VPN</h4><p>Hide your real IP address</p></div></div>
+                <div class="step"><span class="step-n">4</span><div><h4>Clear Cookies &amp; Use Incognito</h4><p>Regularly clear cookies and browse privately</p></div></div>
+            </div>
+            <button class="btn-primary" onclick="closeRiskGuide()">Got It, I'll Take Action</button>
+        </div>
+    </div>
+
+    <!-- Welcome Popup -->
+    <div class="overlay" id="popup" style="display:none">
+        <div class="overlay-box overlay-compact">
+            <div class="popup-warning-icon">⚠️</div>
+            <h3>Privacy Alert</h3>
+            <p>This website can identify and track you <strong>without cookies or login credentials.</strong></p>
+            <p class="popup-sub">Your browser fingerprint is being captured right now.</p>
+            <button class="btn-primary" onclick="closePopup()">I Understand</button>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="overlay" id="detailModal" style="display:none">
+        <div class="overlay-box overlay-compact">
+            <button class="overlay-x" onclick="closeDetailModal()">✕</button>
+            <h3 id="modalTitle">—</h3>
+            <div class="modal-val" id="modalValue">—</div>
+            <p class="modal-note" id="modalNote"></p>
+            <button class="btn-primary" onclick="closeDetailModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="scroll-engine.js"></script>
+</body>
+
+</html>
